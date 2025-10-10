@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="it">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Statua in AR</title>
+  <!-- Carica <model-viewer> -->
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <style>
+    :root {
+      --ui-pad: 12px;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      background: #000
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      font-family: system-ui, sans-serif;
+      color: #fff
+    }
+
+    header {
+      padding: 10px 16px;
+      border-bottom: 1px solid #333;
+      background: #000
+    }
+
+    model-viewer {
+      width: 100%;
+      height: calc(100% - 56px);
+      background: #000
+    }
+
+    #arButton {
+      position: absolute;
+      left: var(--ui-pad);
+      bottom: var(--ui-pad);
+      padding: 8px 12px;
+      border: 1px solid #555;
+      border-radius: 12px;
+      background: #111;
+      color: #fff;
+      cursor: pointer
+    }
+
+    #progress {
+      position: absolute;
+      right: var(--ui-pad);
+      bottom: var(--ui-pad);
+      padding: 6px 10px;
+      border: 1px solid #555;
+      border-radius: 10px;
+      background: #111;
+      color: #fff;
+      font-size: 14px
+    }
+
+    #error {
+      position: fixed;
+      inset: auto var(--ui-pad) var(--ui-pad) var(--ui-pad);
+      padding: 10px 12px;
+      border: 1px solid #e99;
+      border-radius: 10px;
+      background: #fff5f5;
+      color: #900;
+      display: none
+    }
+
+    .hint {
+      color: #aaa;
+      font-size: 14px
+    }
+
+    a {
+      color: inherit
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <strong>Statua in AR</strong>
+    <span class="hint"> · Trascina per ruotare · Pinch per zoom · Premi “Vedi in AR” su telefono</span>
+  </header>
+
+  <model-viewer id="mv" src="statua.glb" ar ar-modes="webxr scene-viewer quick-look" camera-controls
+    touch-action="pan-y" camera-target="auto" camera-orbit="0deg 75deg 11 0%" field-of-view="35deg"
+    min-camera-orbit="auto auto 80%" max-camera-orbit="auto auto 140%" min-field-of-view="20deg"
+    max-field-of-view="60deg" shadow-intensity="1" environment-image="neutral" exposure="1"   orientation="180 180 0 180"  ></model-viewer>
+    <button id="arButton" slot="ar-button">Vedi in AR</button>
+    <div id="progress" slot="progress-bar">Caricamento…</div>
+  </model-viewer>
+
+  <div id="error"></div>
+
+  <script>
+    const mv = document.getElementById('mv');
+    const progress = document.getElementById('progress');
+    const errBox = document.getElementById('error');
+
+    mv.addEventListener('progress', (e) => {
+      const p = Math.round((e.detail.totalProgress || 0) * 100);
+      progress.textContent = (p >= 100) ? "Pronto" : ("Caricamento " + p + "%");
+    });
+
+    mv.addEventListener('load', () => {
+      mv.cameraTarget = 'auto';
+      mv.cameraOrbit = '0deg 75deg 110%';
+      mv.fieldOfView = '35deg';
+      mv.jumpCameraToGoal();
+    });
+
+    mv.addEventListener('error', () => {
+      errBox.style.display = 'block';
+      errBox.innerHTML = `
+          <strong>Errore nel caricamento del modello.</strong><br>
+          Verifica che il file <code>statua.glb</code> sia nella stessa cartella di <code>index.html</code> e che il nome combaci.<br>
+          Suggerimento: apri la console del browser per dettagli.
+        `;
+    });
+  </script>
+</body>
+
+</html>
