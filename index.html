@@ -1,43 +1,26 @@
 <!doctype html>
 <html lang="it">
-
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Statua in AR</title>
+
   <!-- Carica <model-viewer> -->
-  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <script type="module"
+    src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
   <style>
-    :root {
-      --ui-pad: 12px;
-    }
-
-    html,
-    body {
-      height: 100%;
-      margin: 0;
-      background: #000
-    }
-
-    body {
-      display: flex;
-      flex-direction: column;
-      font-family: system-ui, sans-serif;
-      color: #fff
-    }
-
-    header {
-      padding: 10px 16px;
-      border-bottom: 1px solid #333;
-      background: #000
-    }
+    :root { --ui-pad: 12px; }
+    html, body { height: 100%; margin: 0; background: #000; }
+    body { display: flex; flex-direction: column; font-family: system-ui, sans-serif; color: #fff; }
+    header { padding: 10px 16px; border-bottom: 1px solid #333; background: #000; }
 
     model-viewer {
+      position: relative;          /* <-- serve per posizionare il bottone in assoluto */
       width: 100%;
       height: calc(100% - 56px);
-      background: #000
+      background: #000;
     }
-
     #arButton {
       position: absolute;
       left: var(--ui-pad);
@@ -47,9 +30,8 @@
       border-radius: 12px;
       background: #111;
       color: #fff;
-      cursor: pointer
+      cursor: pointer;
     }
-
     #progress {
       position: absolute;
       right: var(--ui-pad);
@@ -59,9 +41,8 @@
       border-radius: 10px;
       background: #111;
       color: #fff;
-      font-size: 14px
+      font-size: 14px;
     }
-
     #error {
       position: fixed;
       inset: auto var(--ui-pad) var(--ui-pad) var(--ui-pad);
@@ -70,30 +51,43 @@
       border-radius: 10px;
       background: #fff5f5;
       color: #900;
-      display: none
+      display: none;
     }
-
-    .hint {
-      color: #aaa;
-      font-size: 14px
-    }
-
-    a {
-      color: inherit
-    }
+    .hint { color: #aaa; font-size: 14px; }
+    a { color: inherit; }
   </style>
 </head>
-
 <body>
   <header>
     <strong>Statua in AR</strong>
     <span class="hint"> · Trascina per ruotare · Pinch per zoom · Premi “Vedi in AR” su telefono</span>
   </header>
 
-  <model-viewer id="mv" src="statua.glb" ar ar-modes="webxr scene-viewer quick-look" camera-controls
-    touch-action="pan-y" camera-target="auto" camera-orbit="0deg 75deg 11 0%" field-of-view="35deg"
-    min-camera-orbit="auto auto 80%" max-camera-orbit="auto auto 140%" min-field-of-view="20deg"
-    max-field-of-view="60deg" shadow-intensity="1" environment-image="neutral" exposure="1"   orientation="180 180 0 180"  ></model-viewer>
+  <!-- MODEL-VIEWER CORRETTO -->
+  <model-viewer
+    id="mv"
+    src="statua.glb"
+    ios-src="statua.usdz"                
+    ar
+    ar-modes="webxr scene-viewer quick-look"
+    ar-scale="fixed"
+    ar-placement="floor"
+    camera-controls
+    touch-action="pan-y"
+    camera-target="auto"
+    camera-orbit="0deg 75deg 110%"       
+    field-of-view="35deg"
+    min-camera-orbit="auto auto 80%"
+    max-camera-orbit="auto auto 140%"
+    min-field-of-view="20deg"
+    max-field-of-view="60deg"
+    shadow-intensity="1"
+    environment-image="neutral"
+    exposure="1"
+    orientation="1 0 0 0"              
+    alt="Modello 3D della statua">
+
+    <!-- Questi DEVONO stare DENTRO per usare gli slot -->
     <button id="arButton" slot="ar-button">Vedi in AR</button>
     <div id="progress" slot="progress-bar">Caricamento…</div>
   </model-viewer>
@@ -104,12 +98,15 @@
     const mv = document.getElementById('mv');
     const progress = document.getElementById('progress');
     const errBox = document.getElementById('error');
+    const arBtn = document.getElementById('arButton');
 
+    // Barra di progresso
     mv.addEventListener('progress', (e) => {
       const p = Math.round((e.detail.totalProgress || 0) * 100);
       progress.textContent = (p >= 100) ? "Pronto" : ("Caricamento " + p + "%");
     });
 
+    // Impostazioni camera all'avvio
     mv.addEventListener('load', () => {
       mv.cameraTarget = 'auto';
       mv.cameraOrbit = '0deg 75deg 110%';
@@ -117,15 +114,32 @@
       mv.jumpCameraToGoal();
     });
 
+    // Mostra errori caricamento
     mv.addEventListener('error', () => {
       errBox.style.display = 'block';
       errBox.innerHTML = `
-          <strong>Errore nel caricamento del modello.</strong><br>
-          Verifica che il file <code>statua.glb</code> sia nella stessa cartella di <code>index.html</code> e che il nome combaci.<br>
-          Suggerimento: apri la console del browser per dettagli.
-        `;
+        <strong>Errore nel caricamento del modello.</strong><br>
+        Verifica che <code>statua.glb</code> sia nello stesso percorso del file HTML e che il nome combaci.<br>
+        Suggerimento: apri la console del browser per dettagli.
+      `;
+    });
+
+    // Click AR universale: se lo slot non innesca (es. su desktop), forziamo via JS
+    arBtn.addEventListener('click', async (ev) => {
+      // Se il device supporta nativamente l'AR, model-viewer lo gestisce da solo.
+      // Su desktop o se AR non è disponibile, possiamo fallbackare con un messaggio.
+      try {
+        // canActivateAR è true solo sui device supportati
+        if (mv.canActivateAR) {
+          await mv.activateAR();  // Android WebXR/Scene Viewer, iOS Quick Look
+        } else {
+          alert("La modalità AR non è supportata su questo dispositivo/browser. Prova da uno smartphone compatibile.");
+        }
+      } catch (e) {
+        console.error(e);
+        alert("Impossibile avviare l'AR su questo dispositivo.");
+      }
     });
   </script>
 </body>
-
 </html>
