@@ -1,0 +1,9 @@
+# Asset intermedio generato localmente
+statua-colori.glb
+
+# Sorgenti originali molto pesanti: restano locali e non servono a GitHub Pages
+statua/
+
+# File temporanei degli strumenti locali
+*.tmp
+tools/bin/
