@@ -4,7 +4,7 @@
 		"nodeCount": 1,
 		"meshCount": 1,
 		"materialCount": 1,
-		"textureCount": 2,
+		"textureCount": 1,
 		"animationCount": 0
 	},
 	"render": {
@@ -13,14 +13,14 @@
 		"triangleCount": 248346
 	},
 	"data": {
-		"json": 1954,
-		"binary": 5027812,
+		"json": 1374,
+		"binary": 4832540,
 		"buffers": {
-			"vertex": 1110260,
+			"vertex": 1776416,
 			"index": 1490076,
 			"animation": 0,
 			"transform": 0,
-			"image": 2427471
+			"image": 1566045
 		}
 	}
 }

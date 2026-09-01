@@ -2,7 +2,8 @@ param(
     [string]$SourceGlb = "statua.glb",
     [string]$BaseColorTexture = "statua/antique+bishop+statue+3d+model_basecolor.jpg",
     [string]$NormalTexture = "statua/antique+bishop+statue+3d+model_normal.jpg",
-    [string]$OutputGlb = "statua-colori.glb"
+    [string]$OutputGlb = "statua-colori.glb",
+    [switch]$NoNormalMap
 )
 
 $ErrorActionPreference = "Stop"
@@ -92,7 +93,10 @@ foreach ($view in $gltf.bufferViews) {
 }
 
 $baseColorView = Add-EmbeddedImage $binaryStream $bufferViews $BaseColorTexture "Texture colore"
-$normalView = Add-EmbeddedImage $binaryStream $bufferViews $NormalTexture "Texture normali"
+$normalView = $null
+if (-not $NoNormalMap) {
+    $normalView = Add-EmbeddedImage $binaryStream $bufferViews $NormalTexture "Texture normali"
+}
 Align-Four $binaryStream
 
 $gltf.bufferViews = @($bufferViews)
@@ -108,15 +112,20 @@ $gltf | Add-Member -NotePropertyName samplers -NotePropertyValue @(
     }
 ) -Force
 
-$gltf | Add-Member -NotePropertyName images -NotePropertyValue @(
-    [pscustomobject]@{ name = "Colore originale"; bufferView = $baseColorView; mimeType = "image/jpeg" },
-    [pscustomobject]@{ name = "Dettaglio superficie"; bufferView = $normalView; mimeType = "image/jpeg" }
-) -Force
+$images = @(
+    [pscustomobject]@{ name = "Colore originale"; bufferView = $baseColorView; mimeType = "image/jpeg" }
+)
+$textures = @(
+    [pscustomobject]@{ name = "Colore originale"; sampler = 0; source = 0 }
+)
 
-$gltf | Add-Member -NotePropertyName textures -NotePropertyValue @(
-    [pscustomobject]@{ name = "Colore originale"; sampler = 0; source = 0 },
-    [pscustomobject]@{ name = "Dettaglio superficie"; sampler = 0; source = 1 }
-) -Force
+if (-not $NoNormalMap) {
+    $images += [pscustomobject]@{ name = "Dettaglio superficie"; bufferView = $normalView; mimeType = "image/jpeg" }
+    $textures += [pscustomobject]@{ name = "Dettaglio superficie"; sampler = 0; source = 1 }
+}
+
+$gltf | Add-Member -NotePropertyName images -NotePropertyValue $images -Force
+$gltf | Add-Member -NotePropertyName textures -NotePropertyValue $textures -Force
 
 $material = $gltf.materials[0]
 $material.name = "Statua policroma"
@@ -124,7 +133,12 @@ $material.pbrMetallicRoughness.baseColorFactor = @(1.0, 1.0, 1.0, 1.0)
 $material.pbrMetallicRoughness.metallicFactor = 0.0
 $material.pbrMetallicRoughness.roughnessFactor = 0.82
 $material.pbrMetallicRoughness | Add-Member -NotePropertyName baseColorTexture -NotePropertyValue ([pscustomobject]@{ index = 0 }) -Force
-$material | Add-Member -NotePropertyName normalTexture -NotePropertyValue ([pscustomobject]@{ index = 1; scale = 0.85 }) -Force
+if ($NoNormalMap) {
+    $material.PSObject.Properties.Remove("normalTexture")
+}
+else {
+    $material | Add-Member -NotePropertyName normalTexture -NotePropertyValue ([pscustomobject]@{ index = 1; scale = 0.85 }) -Force
+}
 $material.doubleSided = $true
 
 $utf8 = New-Object System.Text.UTF8Encoding($false)
@@ -159,4 +173,5 @@ finally {
     $binaryStream.Dispose()
 }
 
-Write-Output "Creato $OutputGlb ($totalLength byte) con colore e normal map incorporati."
+$detailMessage = if ($NoNormalMap) { "solo con il colore incorporato" } else { "con colore e normal map incorporati" }
+Write-Output "Creato $OutputGlb ($totalLength byte) $detailMessage."

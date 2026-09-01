@@ -16,24 +16,25 @@ URL GitHub Pages e destinazione del QR code:
 
 ## Asset 3D
 
-L'asset usato dal sito è `statua-ar.glb`:
+L'asset usato dal sito è `statua-ar-v2.glb`:
 
 - texture colore originale incorporata;
-- normal map incorporata;
+- UV, posizioni e normali conservate in virgola mobile, senza trasformazioni di texture dipendenti dalla GPU;
+- normal map volutamente esclusa per evitare differenze di shader tra GPU desktop e mobile;
 - orientamento verticale nativo, senza rotazioni forzate nella pagina;
 - altezza del modello pari a 1 unità/metri nella scena;
-- 248.346 triangoli e circa 5 MB, contro i 2.210.778 triangoli e 38,8 MB del tentativo iniziale.
+- 248.346 triangoli e circa 4,8 MB, contro i 2.210.778 triangoli e 38,8 MB del tentativo iniziale.
 
 Il file intermedio a colori può essere rigenerato con:
 
 ```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\build-colored-glb.ps1
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\tools\build-colored-glb.ps1 -NoNormalMap
 ```
 
 La versione web è stata poi ottimizzata con [gltfpack / meshoptimizer](https://github.com/zeux/meshoptimizer):
 
 ```powershell
-gltfpack -i statua-colori.glb -o statua-ar.glb -si 0.12 -sp -se 0.01 -vp 15 -vt 14 -vn 10 -r statua-ar-report.json
+gltfpack -i statua-colori.glb -o statua-ar-v2.glb -si 0.12 -sp -se 0.01 -noq -r statua-ar-v2-report.json
 ```
 
 ## QR code

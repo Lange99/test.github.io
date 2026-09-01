@@ -1,5 +1,5 @@
-# Asset intermedio generato localmente
-statua-colori.glb
+# Asset intermedi generati localmente
+statua-colori*.glb
 
 # Sorgenti originali molto pesanti: restano locali e non servono a GitHub Pages
 statua/
