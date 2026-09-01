@@ -3,6 +3,8 @@ statua-colori*.glb
 
 # Sorgenti originali molto pesanti: restano locali e non servono a GitHub Pages
 statua/
+statua_post/
+RAPICANO TAVOLE TESI (2).pdf
 
 # File temporanei degli strumenti locali
 *.tmp

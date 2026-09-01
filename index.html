@@ -5,21 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#251713">
   <meta name="color-scheme" content="only light">
-  <meta name="description" content="Osserva la statua di San Catello a colori e posizionala nel tuo spazio con la realtà aumentata.">
+  <meta name="description" content="Esplora il progetto di studio e restauro di San Catello attraverso tavole, video, modelli 3D e realtà aumentata.">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="it_IT">
-  <meta property="og:title" content="San Catello in realtà aumentata">
-  <meta property="og:description" content="Esplora la statua a colori in 3D e portala nel tuo spazio.">
+  <meta property="og:title" content="San Catello — esperienza digitale">
+  <meta property="og:description" content="Studio, restauro e valorizzazione digitale della scultura lignea policroma di San Catello.">
   <meta property="og:url" content="https://lange99.github.io/test.github.io/">
   <meta property="og:image" content="https://lange99.github.io/test.github.io/og.png">
   <meta property="og:image:width" content="1730">
   <meta property="og:image:height" content="909">
-  <meta property="og:image:alt" content="San Catello in realtà aumentata — esplora la statua a colori nel tuo spazio">
+  <meta property="og:image:alt" content="San Catello — esplora la statua a colori in 3D e realtà aumentata">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="San Catello in realtà aumentata">
-  <meta name="twitter:description" content="Esplora la statua a colori in 3D e portala nel tuo spazio.">
+  <meta name="twitter:title" content="San Catello — esperienza digitale">
+  <meta name="twitter:description" content="Studio, restauro e valorizzazione digitale della scultura lignea policroma di San Catello.">
   <meta name="twitter:image" content="https://lange99.github.io/test.github.io/og.png">
-  <title>San Catello in realtà aumentata</title>
+  <title>San Catello — esperienza digitale</title>
 
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.3.1/model-viewer.min.js"></script>
 
@@ -37,21 +37,25 @@
       --viewer: #d8d0c4;
       --white: #fffdf8;
       --shadow: 0 22px 60px rgba(41, 23, 17, 0.22);
+      --soft-shadow: 0 12px 32px rgba(47, 29, 22, 0.14);
     }
 
     * {
       box-sizing: border-box;
     }
 
-    html,
-    body {
+    html {
+      min-width: 320px;
       min-height: 100%;
-      margin: 0;
-      color-scheme: only light;
+      background: var(--paper);
+      scroll-behavior: smooth;
     }
 
     body {
       min-width: 320px;
+      min-height: 100%;
+      margin: 0;
+      overflow: hidden;
       background: var(--paper);
       color: var(--ink);
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -68,16 +72,41 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .skip-link {
+      position: fixed;
+      z-index: 100;
+      top: 10px;
+      left: 10px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: var(--wine);
+      color: white;
+      transform: translateY(-160%);
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+
     .topbar {
       position: fixed;
-      z-index: 20;
+      z-index: 30;
       top: 0;
       right: 0;
       left: 0;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 76px;
+      height: calc(76px + env(safe-area-inset-top));
       padding: env(safe-area-inset-top) clamp(18px, 3vw, 42px) 0;
       pointer-events: none;
     }
@@ -102,7 +131,7 @@
       place-items: center;
       border: 1px solid rgba(118, 47, 41, 0.28);
       border-radius: 50%;
-      background: rgba(255, 253, 248, 0.74);
+      background: rgba(255, 253, 248, 0.78);
       box-shadow: 0 8px 24px rgba(56, 32, 24, 0.12);
       color: var(--wine);
       backdrop-filter: blur(12px);
@@ -130,11 +159,12 @@
     }
 
     .share-button,
-    .tool-button {
+    .tool-button,
+    .modal-icon-button {
       display: inline-grid;
       place-items: center;
       border: 1px solid rgba(73, 49, 39, 0.16);
-      background: rgba(255, 253, 248, 0.78);
+      background: rgba(255, 253, 248, 0.82);
       color: var(--ink);
       box-shadow: 0 10px 30px rgba(47, 26, 19, 0.12);
       cursor: pointer;
@@ -152,41 +182,37 @@
     }
 
     .share-button:hover,
-    .tool-button:hover {
+    .tool-button:hover,
+    .modal-icon-button:hover {
       border-color: rgba(118, 47, 41, 0.38);
       background: var(--white);
     }
 
-    .share-button:focus-visible,
-    .tool-button:focus-visible,
-    .ar-button:focus-visible {
-      outline: 3px solid rgba(188, 139, 63, 0.48);
+    :focus-visible {
+      outline: 3px solid rgba(188, 139, 63, 0.55);
       outline-offset: 3px;
     }
 
     .experience {
       display: grid;
       min-height: 100svh;
-      grid-template-columns: minmax(310px, 36%) 1fr;
+      grid-template-columns: minmax(390px, 40%) minmax(0, 1fr);
     }
 
-    .story {
+    .sidebar {
       position: relative;
       z-index: 2;
-      display: flex;
+      min-width: 0;
       min-height: 100svh;
-      flex-direction: column;
-      justify-content: center;
-      overflow: hidden;
-      padding: 112px clamp(30px, 5vw, 82px) 52px;
       border-right: 1px solid var(--line);
       background:
         radial-gradient(circle at 8% 14%, rgba(188, 139, 63, 0.17), transparent 24%),
         linear-gradient(145deg, #f8f4ec 0%, var(--paper) 60%, #e9ddce 100%);
     }
 
-    .story::after {
+    .sidebar::after {
       position: absolute;
+      z-index: -1;
       right: -125px;
       bottom: -150px;
       width: 310px;
@@ -198,13 +224,114 @@
       pointer-events: none;
     }
 
+    .sidebar-shell {
+      display: grid;
+      height: 100svh;
+      min-height: 0;
+      padding: 94px clamp(26px, 3.2vw, 54px) 28px;
+      grid-template-rows: auto minmax(0, 1fr);
+    }
+
+    .section-nav {
+      display: grid;
+      border-top: 1px solid var(--line);
+      border-left: 1px solid var(--line);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .nav-item {
+      position: relative;
+      display: grid;
+      min-height: 52px;
+      align-content: center;
+      padding: 9px 13px;
+      border: 0;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 253, 248, 0.16);
+      color: var(--ink-soft);
+      cursor: pointer;
+      gap: 3px;
+      text-align: left;
+      transition: background 180ms ease, color 180ms ease;
+    }
+
+    .nav-item::after {
+      position: absolute;
+      right: 10px;
+      bottom: 8px;
+      left: 10px;
+      height: 1px;
+      background: var(--gold);
+      content: "";
+      opacity: 0;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .nav-index {
+      color: var(--gold);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .nav-label {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+
+    .nav-item:hover {
+      background: rgba(255, 253, 248, 0.5);
+      color: var(--ink);
+    }
+
+    .nav-item[aria-selected="true"] {
+      background: rgba(118, 47, 41, 0.075);
+      color: var(--wine);
+    }
+
+    .nav-item[aria-selected="true"]::after {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+
+    .sidebar-scroll {
+      min-height: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      padding: 30px 7px 22px 1px;
+      scrollbar-color: rgba(118, 47, 41, 0.35) transparent;
+      scrollbar-width: thin;
+    }
+
+    .section-panel {
+      max-width: 640px;
+      animation: panel-in 280ms ease both;
+    }
+
+    @keyframes panel-in {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     .eyebrow {
       display: flex;
       align-items: center;
       gap: 10px;
-      margin: 0 0 18px;
+      margin: 0 0 16px;
       color: var(--wine);
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 800;
       letter-spacing: 0.16em;
       text-transform: uppercase;
@@ -213,86 +340,346 @@
     .eyebrow::before {
       width: 28px;
       height: 1px;
+      flex: 0 0 auto;
       background: var(--gold);
       content: "";
     }
 
-    h1 {
-      max-width: 540px;
+    .section-title {
+      max-width: 580px;
       margin: 0;
       font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(48px, 5.8vw, 86px);
+      font-size: clamp(38px, 4.15vw, 62px);
       font-weight: 500;
-      letter-spacing: -0.055em;
-      line-height: 0.93;
+      letter-spacing: -0.045em;
+      line-height: 0.98;
     }
 
-    h1 em {
+    .section-title em {
       display: block;
       color: var(--wine);
       font-weight: 500;
     }
 
-    .intro {
-      max-width: 460px;
-      margin: 26px 0 0;
+    .section-intro {
+      max-width: 570px;
+      margin: 22px 0 0;
       color: var(--ink-soft);
-      font-size: clamp(15px, 1.4vw, 18px);
-      line-height: 1.65;
+      font-size: 14px;
+      line-height: 1.7;
     }
 
-    .steps {
+    .project-copy {
       display: grid;
-      max-width: 470px;
-      margin: 38px 0 0;
-      padding: 0;
-      gap: 0;
-      list-style: none;
-      counter-reset: steps;
-    }
-
-    .steps li {
-      display: grid;
-      min-height: 48px;
-      align-items: center;
-      padding: 10px 0;
-      border-top: 1px solid var(--line);
-      counter-increment: steps;
-      grid-template-columns: 34px 1fr;
-      color: #46352f;
-      font-size: 13px;
-      line-height: 1.4;
-    }
-
-    .steps li::before {
-      color: var(--gold);
-      content: "0" counter(steps);
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .model-state {
-      display: flex;
-      align-items: center;
-      gap: 9px;
+      max-width: 570px;
       margin-top: 28px;
+      gap: 18px;
+    }
+
+    .project-copy p {
+      margin: 0;
+      color: #493832;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .project-facts {
+      display: grid;
+      margin: 30px 0 0;
+      padding: 0;
+      border-top: 1px solid var(--line);
+      list-style: none;
+    }
+
+    .project-facts li {
+      display: grid;
+      min-height: 52px;
+      align-items: center;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--line);
+      grid-template-columns: minmax(96px, 0.36fr) 1fr;
+      gap: 16px;
+    }
+
+    .project-facts strong {
+      color: var(--wine);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .project-facts span {
       color: var(--ink-soft);
       font-size: 12px;
-      font-weight: 700;
+      line-height: 1.45;
     }
 
-    .state-dot {
+    .inline-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 20px;
+      color: var(--wine);
+      font-size: 12px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .inline-action::after {
+      content: "↗";
+      transition: transform 160ms ease;
+    }
+
+    .inline-action:hover::after {
+      transform: translate(2px, -2px);
+    }
+
+    .board-gallery {
+      display: grid;
+      margin-top: 24px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .board-card {
+      overflow: hidden;
+      padding: 0;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: rgba(255, 253, 248, 0.62);
+      color: var(--ink);
+      cursor: zoom-in;
+      text-align: left;
+      transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+    }
+
+    .board-card:hover {
+      border-color: rgba(118, 47, 41, 0.38);
+      box-shadow: 0 12px 26px rgba(67, 39, 29, 0.11);
+      transform: translateY(-2px);
+    }
+
+    .board-thumb {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 1.414 / 1;
+      border-bottom: 1px solid var(--line);
+      background: #f9f7f2;
+    }
+
+    .board-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 300ms ease;
+    }
+
+    .board-card:hover .board-thumb img {
+      transform: scale(1.025);
+    }
+
+    .board-card-copy {
+      display: grid;
+      min-height: 68px;
+      padding: 10px 11px 12px;
+      align-content: start;
+      gap: 4px;
+    }
+
+    .board-number {
+      color: var(--gold);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+    }
+
+    .board-name {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    .video-grid {
+      display: grid;
+      margin-top: 28px;
+      gap: 16px;
+    }
+
+    .video-card {
+      display: grid;
+      overflow: hidden;
+      padding: 0;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 253, 248, 0.64);
+      color: var(--ink);
+      cursor: pointer;
+      grid-template-columns: minmax(142px, 0.44fr) 1fr;
+      text-align: left;
+      transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+    }
+
+    .video-card:hover {
+      border-color: rgba(118, 47, 41, 0.4);
+      box-shadow: 0 15px 32px rgba(67, 39, 29, 0.12);
+      transform: translateY(-2px);
+    }
+
+    .video-thumb {
+      position: relative;
+      min-height: 132px;
+      overflow: hidden;
+      background: var(--wine-dark);
+    }
+
+    .video-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .play-badge {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      display: grid;
+      width: 48px;
+      height: 48px;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.42);
+      border-radius: 50%;
+      background: rgba(75, 31, 27, 0.9);
+      color: white;
+      box-shadow: 0 10px 28px rgba(35, 16, 13, 0.36);
+      transform: translate(-50%, -50%);
+      transition: transform 180ms ease;
+    }
+
+    .video-card:hover .play-badge {
+      transform: translate(-50%, -50%) scale(1.06);
+    }
+
+    .play-badge svg {
+      width: 18px;
+      height: 18px;
+      margin-left: 2px;
+      fill: currentColor;
+    }
+
+    .video-copy {
+      display: grid;
+      align-content: center;
+      padding: 19px;
+      gap: 7px;
+    }
+
+    .video-copy span {
+      color: var(--gold);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .video-copy strong {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    .video-copy small {
+      color: var(--ink-soft);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .state-selectors {
+      display: grid;
+      margin-top: 26px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .state-card {
+      position: relative;
+      display: grid;
+      min-height: 150px;
+      align-content: end;
+      padding: 18px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background:
+        radial-gradient(circle at 100% 0%, rgba(188, 139, 63, 0.16), transparent 38%),
+        rgba(255, 253, 248, 0.56);
+      color: var(--ink);
+      cursor: pointer;
+      gap: 7px;
+      text-align: left;
+      transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+    }
+
+    .state-card:hover {
+      border-color: rgba(118, 47, 41, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .state-card[aria-pressed="true"] {
+      border-color: rgba(118, 47, 41, 0.64);
+      background:
+        radial-gradient(circle at 100% 0%, rgba(188, 139, 63, 0.2), transparent 42%),
+        rgba(118, 47, 41, 0.09);
+      box-shadow: 0 12px 28px rgba(75, 31, 27, 0.12);
+    }
+
+    .state-card[aria-pressed="true"]::before {
+      position: absolute;
+      top: 14px;
+      left: 15px;
       width: 8px;
       height: 8px;
       border-radius: 50%;
       background: var(--gold);
       box-shadow: 0 0 0 5px rgba(188, 139, 63, 0.13);
+      content: "";
     }
 
-    body.is-ready .state-dot {
+    .state-card strong {
+      color: var(--wine);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      line-height: 1.4;
+      text-transform: uppercase;
+    }
+
+    .state-card span {
+      color: var(--ink-soft);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .active-state-copy {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-top: 20px;
+      color: var(--ink-soft);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .active-state-copy::before {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
       background: #527653;
       box-shadow: 0 0 0 5px rgba(82, 118, 83, 0.13);
+      content: "";
     }
 
     .stage {
@@ -313,10 +700,31 @@
       --progress-bar-color: var(--wine);
     }
 
+    .viewer-state-label {
+      position: absolute;
+      z-index: 7;
+      top: 94px;
+      left: clamp(20px, 3vw, 42px);
+      display: inline-flex;
+      min-height: 34px;
+      align-items: center;
+      padding: 0 13px;
+      border: 1px solid rgba(73, 49, 39, 0.14);
+      border-radius: 999px;
+      background: rgba(255, 253, 248, 0.8);
+      color: var(--wine);
+      box-shadow: 0 8px 24px rgba(47, 26, 19, 0.1);
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+      backdrop-filter: blur(12px);
+    }
+
+    .viewer-action,
     .ar-button {
       position: absolute;
-      z-index: 6;
-      right: clamp(20px, 3vw, 44px);
+      z-index: 8;
       bottom: max(28px, env(safe-area-inset-bottom));
       display: inline-flex;
       min-height: 58px;
@@ -324,25 +732,53 @@
       justify-content: center;
       gap: 11px;
       padding: 0 24px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
       border-radius: 999px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+      transition: transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
+    }
+
+    .viewer-action {
+      left: clamp(20px, 3vw, 44px);
+      border: 1px solid rgba(73, 49, 39, 0.2);
+      background: rgba(255, 253, 248, 0.88);
+      color: var(--ink);
+      box-shadow: 0 14px 30px rgba(47, 26, 19, 0.16);
+      backdrop-filter: blur(14px);
+    }
+
+    .ar-button {
+      right: clamp(20px, 3vw, 44px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
       background: linear-gradient(135deg, var(--wine) 0%, var(--wine-dark) 100%);
       color: #fffaf1;
       box-shadow: 0 16px 34px rgba(75, 31, 27, 0.34);
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 800;
-      letter-spacing: 0.01em;
+    }
+
+    .viewer-action:hover,
+    .ar-button:hover {
+      transform: translateY(-1px);
+    }
+
+    .viewer-action:hover {
+      box-shadow: 0 17px 35px rgba(47, 26, 19, 0.2);
     }
 
     .ar-button:hover {
-      transform: translateY(-1px);
       box-shadow: 0 19px 40px rgba(75, 31, 27, 0.4);
     }
 
+    .ar-button.is-unavailable {
+      opacity: 0.58;
+    }
+
+    .viewer-action svg,
     .ar-button svg,
     .share-button svg,
-    .tool-button svg {
+    .tool-button svg,
+    .modal-icon-button svg {
       width: 19px;
       height: 19px;
       fill: none;
@@ -361,7 +797,7 @@
       padding: 14px 16px;
       border: 1px solid rgba(60, 43, 35, 0.13);
       border-radius: 14px;
-      background: rgba(255, 253, 248, 0.82);
+      background: rgba(255, 253, 248, 0.84);
       box-shadow: var(--shadow);
       color: var(--ink);
       gap: 9px;
@@ -378,7 +814,7 @@
     .progress-copy {
       display: flex;
       justify-content: space-between;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 800;
       letter-spacing: 0.04em;
       text-transform: uppercase;
@@ -404,13 +840,14 @@
     .stage-tools {
       position: absolute;
       z-index: 8;
-      top: 92px;
+      top: 94px;
       right: clamp(18px, 2.4vw, 32px);
       display: grid;
       gap: 9px;
     }
 
-    .tool-button {
+    .tool-button,
+    .modal-icon-button {
       width: 44px;
       height: 44px;
       border-radius: 50%;
@@ -423,27 +860,22 @@
       z-index: 7;
       left: 50%;
       border: 1px solid rgba(62, 44, 36, 0.14);
-      background: rgba(255, 253, 248, 0.88);
+      background: rgba(255, 253, 248, 0.9);
       color: var(--ink);
-      box-shadow: 0 12px 32px rgba(47, 29, 22, 0.16);
+      box-shadow: var(--soft-shadow);
       backdrop-filter: blur(14px);
     }
 
     .device-hint {
-      bottom: 30px;
-      max-width: calc(100% - 210px);
-      padding: 11px 15px;
+      bottom: 100px;
+      max-width: min(520px, calc(100% - 80px));
+      padding: 10px 14px;
       border-radius: 999px;
       transform: translateX(-50%);
       color: var(--ink-soft);
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
       text-align: center;
-    }
-
-    .device-hint[hidden],
-    .error-panel[hidden] {
-      display: none;
     }
 
     .error-panel {
@@ -470,7 +902,7 @@
     }
 
     .toast {
-      bottom: 96px;
+      bottom: 102px;
       padding: 10px 15px;
       border-radius: 999px;
       transform: translate(-50%, 12px);
@@ -486,11 +918,201 @@
       opacity: 1;
     }
 
+    dialog {
+      padding: 0;
+      border: 0;
+      color: var(--ink);
+    }
+
+    dialog::backdrop {
+      background: rgba(27, 17, 14, 0.8);
+      backdrop-filter: blur(7px);
+    }
+
+    .board-dialog {
+      width: min(1540px, calc(100vw - 38px));
+      height: min(930px, calc(100dvh - 38px));
+      max-width: none;
+      max-height: none;
+      overflow: hidden;
+      border-radius: 22px;
+      background: #191513;
+      box-shadow: 0 30px 90px rgba(12, 7, 5, 0.52);
+    }
+
+    .board-viewer {
+      display: grid;
+      height: 100%;
+      min-height: 0;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+    }
+
+    .modal-header,
+    .modal-footer {
+      display: flex;
+      min-width: 0;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 13px 16px;
+      background: rgba(31, 25, 22, 0.98);
+      color: #fffaf1;
+    }
+
+    .modal-heading {
+      min-width: 0;
+    }
+
+    .modal-heading span {
+      display: block;
+      overflow: hidden;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 17px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .modal-heading small {
+      color: rgba(255, 250, 241, 0.62);
+      font-size: 10px;
+      font-weight: 750;
+      letter-spacing: 0.11em;
+      text-transform: uppercase;
+    }
+
+    .modal-header-actions {
+      display: flex;
+      flex: 0 0 auto;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .modal-pdf-link {
+      display: inline-flex;
+      min-height: 40px;
+      align-items: center;
+      padding: 0 14px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 999px;
+      color: #fffaf1;
+      font-size: 11px;
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .modal-header .modal-icon-button {
+      border-color: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.08);
+      color: white;
+      box-shadow: none;
+    }
+
+    .board-canvas {
+      display: grid;
+      min-height: 0;
+      place-items: center;
+      overflow: hidden;
+      padding: 18px;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.08), transparent 60%),
+        #181412;
+    }
+
+    .board-canvas img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .modal-footer {
+      justify-content: center;
+    }
+
+    .modal-nav-button {
+      display: inline-flex;
+      min-height: 42px;
+      align-items: center;
+      justify-content: center;
+      padding: 0 18px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 999px;
+      background: transparent;
+      color: #fffaf1;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .modal-nav-button:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .board-counter {
+      min-width: 90px;
+      color: rgba(255, 250, 241, 0.72);
+      font-size: 11px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .video-dialog {
+      width: min(1120px, calc(100vw - 54px));
+      max-width: none;
+      overflow: hidden;
+      border-radius: 22px;
+      background: #191513;
+      box-shadow: 0 30px 90px rgba(12, 7, 5, 0.52);
+    }
+
+    .video-dialog .modal-header {
+      padding: 14px 16px;
+    }
+
+    .video-frame-wrap {
+      aspect-ratio: 16 / 9;
+      background: #090807;
+    }
+
+    .video-frame-wrap iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    @media (max-width: 1100px) {
+      .experience {
+        grid-template-columns: minmax(360px, 43%) minmax(0, 1fr);
+      }
+
+      .state-selectors {
+        grid-template-columns: 1fr;
+      }
+
+      .state-card {
+        min-height: 118px;
+      }
+
+      .video-card {
+        grid-template-columns: 1fr;
+      }
+
+      .video-thumb {
+        min-height: auto;
+        aspect-ratio: 16 / 9;
+      }
+    }
+
     @media (max-width: 820px) {
+      body {
+        overflow: visible;
+      }
+
       .topbar {
         height: calc(68px + env(safe-area-inset-top));
         align-items: flex-end;
         padding: 0 16px 8px;
+        background: linear-gradient(180deg, rgba(243, 237, 226, 0.97) 0%, rgba(243, 237, 226, 0.82) 72%, transparent 100%);
       }
 
       .brand-copy span,
@@ -507,67 +1129,251 @@
         display: block;
       }
 
-      .story {
-        position: absolute;
-        z-index: 6;
-        top: calc(82px + env(safe-area-inset-top));
-        left: 19px;
-        display: block;
-        width: min(330px, calc(100% - 96px));
+      .sidebar {
         min-height: 0;
-        padding: 0;
-        border: 0;
-        background: transparent;
-        pointer-events: none;
+        border-right: 0;
       }
 
-      .story::after,
-      .intro,
-      .steps,
-      .model-state {
+      .sidebar::after {
         display: none;
       }
 
-      .eyebrow {
-        margin-bottom: 8px;
+      .sidebar-shell {
+        display: block;
+        height: auto;
+        min-height: 0;
+        padding: calc(76px + env(safe-area-inset-top)) 0 24px;
+      }
+
+      .section-nav {
+        position: sticky;
+        z-index: 15;
+        top: calc(68px + env(safe-area-inset-top));
+        display: grid;
+        overflow-x: auto;
+        border-left: 0;
+        background: rgba(243, 237, 226, 0.94);
+        grid-auto-columns: minmax(126px, 1fr);
+        grid-auto-flow: column;
+        grid-template-columns: none;
+        scrollbar-width: none;
+        backdrop-filter: blur(14px);
+      }
+
+      .section-nav::-webkit-scrollbar {
+        display: none;
+      }
+
+      .nav-item {
+        min-height: 52px;
+        padding: 8px 12px;
+        white-space: nowrap;
+      }
+
+      .nav-item:first-child {
+        border-left: 1px solid var(--line);
+      }
+
+      .nav-index {
+        display: none;
+      }
+
+      .nav-label {
+        font-size: 10px;
+        text-align: center;
+      }
+
+      .sidebar-scroll {
+        overflow: visible;
+        padding: 30px 18px 10px;
+      }
+
+      .section-panel {
+        max-width: 720px;
+        margin: 0 auto;
+      }
+
+      .section-title {
+        font-size: clamp(38px, 11vw, 54px);
+      }
+
+      .section-intro {
+        font-size: 14px;
+      }
+
+      .project-copy p {
+        font-size: 16px;
+      }
+
+      .board-gallery {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .video-card {
+        grid-template-columns: minmax(130px, 0.42fr) 1fr;
+      }
+
+      .video-thumb {
+        min-height: 126px;
+        aspect-ratio: auto;
+      }
+
+      .state-selectors {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .state-card {
+        min-height: 142px;
+      }
+
+      body:not([data-active-section="ar"]) .stage {
+        display: none;
+      }
+
+      .stage {
+        min-height: 590px;
+        height: 76svh;
+        border-top: 1px solid var(--line);
+      }
+
+      model-viewer {
+        height: 100%;
+        min-height: 0;
+      }
+
+      .viewer-state-label {
+        top: 18px;
+        left: 16px;
+        min-height: 32px;
         font-size: 9px;
-        text-shadow: 0 1px 12px rgba(255, 253, 248, 0.75);
-      }
-
-      .eyebrow::before {
-        width: 20px;
-      }
-
-      h1 {
-        font-size: clamp(37px, 12vw, 54px);
-        line-height: 0.89;
-        text-shadow: 0 2px 22px rgba(255, 253, 248, 0.9);
       }
 
       .stage-tools {
-        top: calc(88px + env(safe-area-inset-top));
+        top: 18px;
         right: 16px;
+      }
+
+      .viewer-action,
+      .ar-button {
+        bottom: max(18px, env(safe-area-inset-bottom));
+        width: calc(50% - 21px);
+        min-height: 56px;
+        padding: 0 10px;
+        gap: 7px;
+        font-size: 11px;
+      }
+
+      .viewer-action {
+        left: 16px;
       }
 
       .ar-button {
         right: 16px;
-        bottom: max(18px, env(safe-area-inset-bottom));
-        left: 16px;
-        width: calc(100% - 32px);
-        min-height: 58px;
       }
 
       .device-hint {
         right: 16px;
-        bottom: max(20px, env(safe-area-inset-bottom));
+        bottom: calc(86px + env(safe-area-inset-bottom));
         left: 16px;
         max-width: none;
-        border-radius: 16px;
+        border-radius: 14px;
         transform: none;
       }
 
       .toast {
-        bottom: 92px;
+        bottom: calc(148px + env(safe-area-inset-bottom));
+      }
+
+      .board-dialog {
+        width: 100vw;
+        height: 100dvh;
+        border-radius: 0;
+      }
+
+      .board-canvas {
+        padding: 8px;
+      }
+
+      .modal-pdf-link {
+        width: 42px;
+        padding: 0;
+        justify-content: center;
+        font-size: 0;
+      }
+
+      .modal-pdf-link::before {
+        content: "PDF";
+        font-size: 10px;
+      }
+
+      .modal-footer {
+        justify-content: space-between;
+      }
+
+      .video-dialog {
+        width: calc(100vw - 24px);
+        border-radius: 18px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .board-gallery {
+        gap: 10px;
+      }
+
+      .board-card-copy {
+        min-height: 64px;
+        padding: 9px;
+      }
+
+      .board-name {
+        font-size: 12px;
+      }
+
+      .video-card {
+        grid-template-columns: 1fr;
+      }
+
+      .video-thumb {
+        min-height: 0;
+        aspect-ratio: 16 / 9;
+      }
+
+      .video-copy strong {
+        font-size: 21px;
+      }
+
+      .state-selectors {
+        grid-template-columns: 1fr;
+      }
+
+      .state-card {
+        min-height: 118px;
+      }
+
+      .project-facts li {
+        grid-template-columns: 1fr;
+        gap: 5px;
+      }
+
+      .modal-heading span {
+        font-size: 14px;
+      }
+
+      .modal-nav-button {
+        min-width: 44px;
+        padding: 0 12px;
+        font-size: 0;
+      }
+
+      .modal-nav-button[data-direction="previous"]::before {
+        content: "←";
+        font-size: 18px;
+      }
+
+      .modal-nav-button[data-direction="next"]::before {
+        content: "→";
+        font-size: 18px;
       }
     }
 
@@ -577,13 +1383,16 @@
       *::after {
         scroll-behavior: auto !important;
         transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
       }
     }
   </style>
 </head>
-<body>
+<body data-active-section="progetto">
+  <a class="skip-link" href="#sectionContent">Vai al contenuto</a>
+
   <header class="topbar">
-    <a class="brand" href="./" aria-label="San Catello AR — torna all'inizio">
+    <a class="brand" href="#progetto" aria-label="San Catello — vai alla sezione Il progetto">
       <span class="brand-mark" aria-hidden="true">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7">
           <path d="M12 3v18M8 7h8M6 21h12" stroke-linecap="round"/>
@@ -602,28 +1411,115 @@
   </header>
 
   <main class="experience">
-    <section class="story" aria-labelledby="pageTitle">
-      <p class="eyebrow">Statua policroma · esperienza AR</p>
-      <h1 id="pageTitle">Incontra <em>San Catello</em></h1>
-      <p class="intro">Osserva la statua a colori da ogni prospettiva oppure portala nel tuo ambiente con la realtà aumentata.</p>
+    <aside class="sidebar" aria-label="Contenuti dell’esperienza">
+      <div class="sidebar-shell">
+        <nav class="section-nav" aria-label="Sezioni" role="tablist">
+          <button class="nav-item" id="tab-progetto" type="button" role="tab" aria-selected="true" aria-controls="panel-progetto" data-section="progetto">
+            <span class="nav-index">01</span>
+            <span class="nav-label">Il progetto</span>
+          </button>
+          <button class="nav-item" id="tab-tavole" type="button" role="tab" aria-selected="false" aria-controls="panel-tavole" tabindex="-1" data-section="tavole">
+            <span class="nav-index">02</span>
+            <span class="nav-label">Tavole illustrative</span>
+          </button>
+          <button class="nav-item" id="tab-video" type="button" role="tab" aria-selected="false" aria-controls="panel-video" tabindex="-1" data-section="video">
+            <span class="nav-index">03</span>
+            <span class="nav-label">Video</span>
+          </button>
+          <button class="nav-item" id="tab-ar" type="button" role="tab" aria-selected="false" aria-controls="panel-ar" tabindex="-1" data-section="ar">
+            <span class="nav-index">04</span>
+            <span class="nav-label">Realtà aumentata</span>
+          </button>
+        </nav>
 
-      <ol class="steps" aria-label="Come usare l'esperienza">
-        <li>Trascina per ruotare la statua e usa due dita per ingrandire.</li>
-        <li>Da smartphone, tocca “Posiziona nel tuo spazio”.</li>
-        <li>Inquadra il pavimento e scegli dove collocare la statua.</li>
-      </ol>
+        <div class="sidebar-scroll" id="sectionContent">
+          <section class="section-panel" id="panel-progetto" role="tabpanel" aria-labelledby="tab-progetto" tabindex="0">
+            <p class="eyebrow">Studio · restauro · valorizzazione</p>
+            <h1 class="section-title">Il progetto <em>San Catello</em></h1>
+            <p class="section-intro">Un percorso digitale attraverso la ricerca storico-artistica, le indagini diagnostiche, la tecnica esecutiva, lo stato di conservazione e gli interventi di restauro documentati nelle tavole originali.</p>
 
-      <div class="model-state" aria-live="polite">
-        <span class="state-dot" aria-hidden="true"></span>
-        <span id="modelState">Preparazione del modello 3D…</span>
+            <div class="project-copy">
+              <p>Il progetto studia due opere attribuite alla scuola napoletana, documentandone provenienza, materiali, alterazioni, tecniche costruttive e possibilità di valorizzazione digitale attraverso rilievi fotogrammetrici e modelli tridimensionali.</p>
+              <p>San Catello è una scultura lignea policroma di artista ignoto, databile all’inizio del XIX secolo. La lettura ravvicinata dell’opera mette in relazione la sua storia materiale con le scelte conservative che ne hanno recuperato stabilità e leggibilità.</p>
+            </div>
+
+            <ul class="project-facts" aria-label="Dati principali del progetto">
+              <li><strong>Opera</strong><span>Scultura lignea policroma, 107,5 × 39 × 25,5 cm</span></li>
+              <li><strong>Documentazione 3D</strong><span>594 fotografie elaborate con tecnica fotogrammetrica</span></li>
+              <li><strong>Percorso</strong><span>Conoscenza, diagnostica, restauro e valorizzazione digitale</span></li>
+            </ul>
+          </section>
+
+          <section class="section-panel" id="panel-tavole" role="tabpanel" aria-labelledby="tab-tavole" tabindex="0" hidden>
+            <p class="eyebrow">Tesi · 19 tavole</p>
+            <h2 class="section-title">Tavole <em>illustrative</em></h2>
+            <p class="section-intro">Esplora il percorso di studio e restauro attraverso le tavole realizzate per la tesi. Dalla conoscenza storico-artistica e tecnico-esecutiva delle opere alle indagini diagnostiche, fino agli interventi conservativi e al confronto tra lo stato precedente e quello successivo al restauro.</p>
+            <a class="inline-action" href="./assets/tavole/rapicano-tavole-tesi.pdf" target="_blank" rel="noopener">Apri il PDF completo</a>
+            <div class="board-gallery" id="boardGallery" aria-label="Galleria delle tavole della tesi"></div>
+          </section>
+
+          <section class="section-panel" id="panel-video" role="tabpanel" aria-labelledby="tab-video" tabindex="0" hidden>
+            <p class="eyebrow">Documentazione audiovisiva</p>
+            <h2 class="section-title">Il restauro <em>in video</em></h2>
+            <p class="section-intro">Due approfondimenti raccontano il percorso conservativo delle sculture lignee policrome e la lettura delle loro strutture.</p>
+
+            <div class="video-grid">
+              <button class="video-card" type="button" data-video-id="Tlw0jM_r-VA" data-video-title="San Catello" data-video-url="https://youtu.be/Tlw0jM_r-VA?si=k9T2Dz2zoFmJWUEu" aria-label="Riproduci il video San Catello">
+                <span class="video-thumb">
+                  <img src="https://i.ytimg.com/vi/Tlw0jM_r-VA/hqdefault.jpg" alt="" loading="lazy" decoding="async">
+                  <span class="play-badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m9 6 9 6-9 6V6Z"/></svg></span>
+                </span>
+                <span class="video-copy">
+                  <span>Video · San Catello</span>
+                  <strong>San Catello</strong>
+                  <small>Il restauro della scultura lignea policroma</small>
+                </span>
+              </button>
+
+              <button class="video-card" type="button" data-video-id="NGdTCfEgQ70" data-video-title="Sant’Antonino" data-video-url="https://youtu.be/NGdTCfEgQ70?feature=shared" aria-label="Riproduci il video Sant’Antonino">
+                <span class="video-thumb">
+                  <img src="https://i.ytimg.com/vi/NGdTCfEgQ70/hqdefault.jpg" alt="" loading="lazy" decoding="async">
+                  <span class="play-badge" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m9 6 9 6-9 6V6Z"/></svg></span>
+                </span>
+                <span class="video-copy">
+                  <span>Video · Sant’Antonino</span>
+                  <strong>Sant’Antonino</strong>
+                  <small>Il restauro e lo studio della struttura lignea</small>
+                </span>
+              </button>
+            </div>
+          </section>
+
+          <section class="section-panel" id="panel-ar" role="tabpanel" aria-labelledby="tab-ar" tabindex="0" hidden>
+            <p class="eyebrow">Confronto · modello 3D</p>
+            <h2 class="section-title">Realtà <em>aumentata</em></h2>
+            <p class="section-intro">Confronta la scultura prima e dopo l’intervento e scopri come il restauro ne ha modificato la leggibilità, mantenendo visibile la storia materiale dell’opera.</p>
+
+            <div class="state-selectors" aria-label="Scegli lo stato della statua">
+              <button class="state-card" type="button" aria-pressed="true" data-model-state="prima">
+                <strong>Prima del restauro</strong>
+                <span>Osserva lo stato dell’opera prima dell’intervento.</span>
+              </button>
+              <button class="state-card" type="button" aria-pressed="false" data-model-state="dopo">
+                <strong>Dopo il restauro</strong>
+                <span>Esplora San Catello al termine del percorso conservativo.</span>
+              </button>
+            </div>
+
+            <div class="active-state-copy" id="activeStateCopy" aria-live="polite">Stato · Prima del restauro</div>
+          </section>
+        </div>
       </div>
-    </section>
+    </aside>
 
-    <section class="stage" aria-label="Visualizzatore 3D della statua">
+    <section class="stage" id="viewerStage" aria-label="Visualizzatore 3D della statua">
+      <div class="viewer-state-label" id="viewerStateLabel" aria-live="polite">Stato · Prima del restauro</div>
+
       <model-viewer
         id="statueViewer"
         src="./statua-ar-v2.glb"
-        alt="Modello 3D a colori della statua di San Catello"
+        alt="Modello 3D di San Catello prima del restauro"
+        tabindex="0"
         ar
         ar-modes="webxr scene-viewer quick-look"
         ar-placement="floor"
@@ -648,7 +1544,7 @@
         interaction-prompt="auto"
         loading="eager">
 
-        <button class="ar-button" slot="ar-button" type="button" aria-label="Posiziona la statua nel tuo spazio con la realtà aumentata">
+        <button class="ar-button" id="arButton" slot="ar-button" type="button" aria-label="Posiziona la statua nel tuo spazio con la realtà aumentata">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3.8 7.4 12 12l8.2-4.6L12 3Z"/><path d="M3.8 7.4V16L12 21l8.2-5V7.4M12 12v9"/></svg>
           <span>Posiziona nel tuo spazio</span>
         </button>
@@ -664,6 +1560,11 @@
         </div>
       </model-viewer>
 
+      <button class="viewer-action" id="exploreButton" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V4h4M16 4h4v4M20 16v4h-4M8 20H4v-4"/><path d="M8.5 12a3.5 3.5 0 1 0 7 0 3.5 3.5 0 0 0-7 0Z"/></svg>
+        <span>Esplora in 3D</span>
+      </button>
+
       <div class="stage-tools" aria-label="Controlli del modello">
         <button class="tool-button" id="resetButton" type="button" aria-label="Riporta la statua alla vista iniziale" title="Vista iniziale">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
@@ -673,7 +1574,7 @@
         </button>
       </div>
 
-      <div class="device-hint" id="deviceHint" hidden>Per usare l’AR, apri questa pagina da uno smartphone compatibile.</div>
+      <div class="device-hint" id="deviceHint" hidden>Per usare la realtà aumentata, apri questa pagina da uno smartphone compatibile.</div>
 
       <div class="error-panel" id="errorPanel" role="alert" hidden>
         <strong>La statua non si è caricata</strong>
@@ -684,86 +1585,450 @@
     </section>
   </main>
 
+  <dialog class="board-dialog" id="boardDialog" aria-labelledby="boardDialogTitle">
+    <div class="board-viewer">
+      <header class="modal-header">
+        <div class="modal-heading">
+          <small id="boardDialogLabel">Tavola 1 di 19</small>
+          <span id="boardDialogTitle">Presentazione delle opere</span>
+        </div>
+        <div class="modal-header-actions">
+          <a class="modal-pdf-link" href="./assets/tavole/rapicano-tavole-tesi.pdf" target="_blank" rel="noopener">Apri PDF completo</a>
+          <button class="modal-icon-button" id="closeBoardDialog" type="button" aria-label="Chiudi la tavola">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+          </button>
+        </div>
+      </header>
+      <div class="board-canvas">
+        <img id="boardDialogImage" src="./assets/tavole/tavola-01.jpg" alt="Tavola 1 — Presentazione delle opere">
+      </div>
+      <footer class="modal-footer">
+        <button class="modal-nav-button" id="previousBoard" type="button" data-direction="previous">Precedente</button>
+        <span class="board-counter" id="boardCounter">1 / 19</span>
+        <button class="modal-nav-button" id="nextBoard" type="button" data-direction="next">Successiva</button>
+      </footer>
+    </div>
+  </dialog>
+
+  <dialog class="video-dialog" id="videoDialog" aria-labelledby="videoDialogTitle">
+    <header class="modal-header">
+      <div class="modal-heading">
+        <small>Documentazione video</small>
+        <span id="videoDialogTitle">San Catello</span>
+      </div>
+      <button class="modal-icon-button" id="closeVideoDialog" type="button" aria-label="Chiudi il video">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+      </button>
+    </header>
+    <div class="video-frame-wrap">
+      <iframe id="videoFrame" title="Video sul restauro" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    </div>
+  </dialog>
+
   <script>
-    const viewer = document.querySelector('#statueViewer');
-    const stage = document.querySelector('.stage');
-    const progressShell = document.querySelector('#progressShell');
-    const progressValue = document.querySelector('#progressValue');
-    const progressFill = document.querySelector('#progressFill');
-    const modelState = document.querySelector('#modelState');
-    const deviceHint = document.querySelector('#deviceHint');
-    const errorPanel = document.querySelector('#errorPanel');
-    const resetButton = document.querySelector('#resetButton');
-    const fullscreenButton = document.querySelector('#fullscreenButton');
-    const shareButton = document.querySelector('#shareButton');
-    const toast = document.querySelector('#toast');
+    const boards = [
+      ["Tavola 1", "Presentazione delle opere"],
+      ["Tavola 1.1", "San Catello"],
+      ["Tavola 1.2", "Sant’Antonino"],
+      ["Tavola 2", "Provenienza"],
+      ["Tavola 3", "Tecnica del supporto"],
+      ["Tavola 3.1", "Esploso San Catello"],
+      ["Tavola 3.2", "Esploso Sant’Antonino"],
+      ["Tavola 4", "Interventi precedenti"],
+      ["Tavola 4.1", "Conservazione San Catello"],
+      ["Tavola 4.2", "Conservazione Sant’Antonino"],
+      ["Tavola 5", "Diagnostica San Catello"],
+      ["Tavola 5.1", "Diagnostica Sant’Antonino"],
+      ["Tavola 5.2", "Stratigrafie San Catello"],
+      ["Tavola 5.3", "Stratigrafie Sant’Antonino"],
+      ["Tavola 6", "Restauro San Catello"],
+      ["Tavola 6.1", "Restauro Sant’Antonino"],
+      ["Tavola 7", "Prima e dopo San Catello"],
+      ["Tavola 7.1", "Prima e dopo Sant’Antonino"],
+      ["Tavola 8", "Conservazione e monitoraggio"]
+    ];
+
+    const modelStates = {
+      prima: {
+        src: "./statua-ar-v2.glb",
+        label: "Stato · Prima del restauro",
+        alt: "Modello 3D di San Catello prima del restauro"
+      },
+      dopo: {
+        src: "./statua-ar-dopo.glb",
+        label: "Stato · Dopo il restauro",
+        alt: "Modello 3D di San Catello dopo il restauro"
+      }
+    };
+
+    const viewer = document.querySelector("#statueViewer");
+    const stage = document.querySelector("#viewerStage");
+    const progressShell = document.querySelector("#progressShell");
+    const progressValue = document.querySelector("#progressValue");
+    const progressFill = document.querySelector("#progressFill");
+    const deviceHint = document.querySelector("#deviceHint");
+    const errorPanel = document.querySelector("#errorPanel");
+    const resetButton = document.querySelector("#resetButton");
+    const fullscreenButton = document.querySelector("#fullscreenButton");
+    const exploreButton = document.querySelector("#exploreButton");
+    const arButton = document.querySelector("#arButton");
+    const shareButton = document.querySelector("#shareButton");
+    const toast = document.querySelector("#toast");
+    const navButtons = Array.from(document.querySelectorAll(".nav-item"));
+    const panels = Array.from(document.querySelectorAll(".section-panel"));
+    const sidebarScroll = document.querySelector(".sidebar-scroll");
+    const stateCards = Array.from(document.querySelectorAll(".state-card"));
+    const activeStateCopy = document.querySelector("#activeStateCopy");
+    const viewerStateLabel = document.querySelector("#viewerStateLabel");
+    const boardGallery = document.querySelector("#boardGallery");
+    const boardDialog = document.querySelector("#boardDialog");
+    const boardDialogImage = document.querySelector("#boardDialogImage");
+    const boardDialogTitle = document.querySelector("#boardDialogTitle");
+    const boardDialogLabel = document.querySelector("#boardDialogLabel");
+    const boardCounter = document.querySelector("#boardCounter");
+    const previousBoard = document.querySelector("#previousBoard");
+    const nextBoard = document.querySelector("#nextBoard");
+    const closeBoardDialog = document.querySelector("#closeBoardDialog");
+    const videoDialog = document.querySelector("#videoDialog");
+    const videoFrame = document.querySelector("#videoFrame");
+    const videoDialogTitle = document.querySelector("#videoDialogTitle");
+    const closeVideoDialog = document.querySelector("#closeVideoDialog");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let activeBoardIndex = 0;
+    let activeModelState = "prima";
     let toastTimer;
+    let lastBoardTrigger;
+    let lastVideoTrigger;
+
+    function boardImagePath(index) {
+      return "./assets/tavole/tavola-" + String(index + 1).padStart(2, "0") + ".jpg";
+    }
 
     function showToast(message) {
       toast.textContent = message;
-      toast.classList.add('is-visible');
+      toast.classList.add("is-visible");
       window.clearTimeout(toastTimer);
-      toastTimer = window.setTimeout(() => toast.classList.remove('is-visible'), 2400);
+      toastTimer = window.setTimeout(function () {
+        toast.classList.remove("is-visible");
+      }, 2400);
     }
 
-    function updateDeviceHint() {
-      deviceHint.hidden = Boolean(viewer.canActivateAR);
+    function showSection(sectionId, options) {
+      const settings = options || {};
+      const targetButton = navButtons.find(function (button) {
+        return button.dataset.section === sectionId;
+      });
+
+      if (!targetButton) {
+        return;
+      }
+
+      navButtons.forEach(function (button) {
+        const isActive = button === targetButton;
+        button.setAttribute("aria-selected", String(isActive));
+        button.tabIndex = isActive ? 0 : -1;
+      });
+
+      panels.forEach(function (panel) {
+        panel.hidden = panel.id !== "panel-" + sectionId;
+      });
+
+      document.body.dataset.activeSection = sectionId;
+      sidebarScroll.scrollTop = 0;
+
+      if (window.matchMedia("(max-width: 820px)").matches && settings.scrollToPanel !== false) {
+        document.querySelector(".section-nav").scrollIntoView({
+          behavior: reducedMotion.matches ? "auto" : "smooth",
+          block: "start"
+        });
+        targetButton.scrollIntoView({
+          behavior: reducedMotion.matches ? "auto" : "smooth",
+          block: "nearest",
+          inline: "center"
+        });
+      }
+
+      if (settings.updateHistory !== false) {
+        history.replaceState(null, "", "#" + sectionId);
+      }
+
+      if (settings.focusPanel) {
+        document.querySelector("#panel-" + sectionId).focus();
+      }
     }
 
-    viewer.addEventListener('progress', (event) => {
-      const progress = Math.min(1, Math.max(0, event.detail.totalProgress || 0));
-      const percentage = Math.round(progress * 100);
-      progressValue.textContent = `${percentage}%`;
-      progressFill.style.transform = `scaleX(${progress})`;
+    navButtons.forEach(function (button, index) {
+      button.addEventListener("click", function () {
+        showSection(button.dataset.section);
+      });
 
-      if (progress >= 1) {
-        window.setTimeout(() => progressShell.classList.add('is-complete'), 220);
+      button.addEventListener("keydown", function (event) {
+        let nextIndex = null;
+        if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+          nextIndex = (index + 1) % navButtons.length;
+        } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+          nextIndex = (index - 1 + navButtons.length) % navButtons.length;
+        } else if (event.key === "Home") {
+          nextIndex = 0;
+        } else if (event.key === "End") {
+          nextIndex = navButtons.length - 1;
+        }
+
+        if (nextIndex !== null) {
+          event.preventDefault();
+          navButtons[nextIndex].focus();
+          showSection(navButtons[nextIndex].dataset.section);
+        }
+      });
+    });
+
+    document.querySelector(".brand").addEventListener("click", function (event) {
+      event.preventDefault();
+      showSection("progetto");
+    });
+
+    boards.forEach(function (board, index) {
+      const button = document.createElement("button");
+      const thumb = document.createElement("span");
+      const image = document.createElement("img");
+      const copy = document.createElement("span");
+      const number = document.createElement("span");
+      const name = document.createElement("span");
+
+      button.className = "board-card";
+      button.type = "button";
+      button.setAttribute("aria-label", "Apri " + board[0] + ": " + board[1]);
+      thumb.className = "board-thumb";
+      image.src = boardImagePath(index);
+      image.alt = "";
+      image.loading = index < 4 ? "eager" : "lazy";
+      image.decoding = "async";
+      copy.className = "board-card-copy";
+      number.className = "board-number";
+      number.textContent = board[0];
+      name.className = "board-name";
+      name.textContent = board[1];
+
+      thumb.appendChild(image);
+      copy.append(number, name);
+      button.append(thumb, copy);
+      button.addEventListener("click", function () {
+        lastBoardTrigger = button;
+        openBoard(index);
+      });
+      boardGallery.appendChild(button);
+    });
+
+    function updateBoard(index) {
+      activeBoardIndex = (index + boards.length) % boards.length;
+      const board = boards[activeBoardIndex];
+      boardDialogImage.src = boardImagePath(activeBoardIndex);
+      boardDialogImage.alt = board[0] + " — " + board[1];
+      boardDialogTitle.textContent = board[1];
+      boardDialogLabel.textContent = board[0] + " · pagina " + (activeBoardIndex + 1) + " di " + boards.length;
+      boardCounter.textContent = (activeBoardIndex + 1) + " / " + boards.length;
+
+      const preload = new Image();
+      preload.src = boardImagePath((activeBoardIndex + 1) % boards.length);
+    }
+
+    function openBoard(index) {
+      updateBoard(index);
+      boardDialog.showModal();
+    }
+
+    previousBoard.addEventListener("click", function () {
+      updateBoard(activeBoardIndex - 1);
+    });
+
+    nextBoard.addEventListener("click", function () {
+      updateBoard(activeBoardIndex + 1);
+    });
+
+    closeBoardDialog.addEventListener("click", function () {
+      boardDialog.close();
+    });
+
+    boardDialog.addEventListener("click", function (event) {
+      if (event.target === boardDialog) {
+        boardDialog.close();
       }
     });
 
-    viewer.addEventListener('load', () => {
-      document.body.classList.add('is-ready');
-      modelState.textContent = 'Modello 3D pronto';
+    boardDialog.addEventListener("close", function () {
+      if (lastBoardTrigger) {
+        lastBoardTrigger.focus();
+      }
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (!boardDialog.open) {
+        return;
+      }
+      if (event.key === "ArrowLeft") {
+        updateBoard(activeBoardIndex - 1);
+      } else if (event.key === "ArrowRight") {
+        updateBoard(activeBoardIndex + 1);
+      }
+    });
+
+    document.querySelectorAll(".video-card").forEach(function (button) {
+      button.addEventListener("click", function () {
+        const useDirectYouTube = window.matchMedia("(max-width: 820px), (pointer: coarse)").matches;
+        if (useDirectYouTube) {
+          window.open(button.dataset.videoUrl, "_blank", "noopener");
+          return;
+        }
+
+        lastVideoTrigger = button;
+        videoDialogTitle.textContent = button.dataset.videoTitle;
+        videoFrame.src = "https://www.youtube-nocookie.com/embed/" + button.dataset.videoId + "?autoplay=1&rel=0";
+        videoDialog.showModal();
+      });
+    });
+
+    function closeVideo() {
+      videoDialog.close();
+      videoFrame.src = "";
+    }
+
+    closeVideoDialog.addEventListener("click", closeVideo);
+    videoDialog.addEventListener("click", function (event) {
+      if (event.target === videoDialog) {
+        closeVideo();
+      }
+    });
+    videoDialog.addEventListener("close", function () {
+      videoFrame.src = "";
+      if (lastVideoTrigger) {
+        lastVideoTrigger.focus();
+      }
+    });
+
+    function resetView(showConfirmation) {
+      viewer.cameraTarget = "auto auto auto";
+      viewer.cameraOrbit = "-22deg 76deg 112%";
+      viewer.fieldOfView = "32deg";
+      viewer.jumpCameraToGoal();
+      if (showConfirmation) {
+        showToast("Vista iniziale ripristinata");
+      }
+    }
+
+    function selectModelState(stateKey) {
+      if (!modelStates[stateKey]) {
+        return;
+      }
+
+      const state = modelStates[stateKey];
+      stateCards.forEach(function (card) {
+        card.setAttribute("aria-pressed", String(card.dataset.modelState === stateKey));
+      });
+      activeStateCopy.textContent = state.label;
+      viewerStateLabel.textContent = state.label;
+
+      if (activeModelState === stateKey) {
+        return;
+      }
+
+      activeModelState = stateKey;
+      document.body.classList.remove("is-ready");
+      progressShell.classList.remove("is-complete");
+      progressValue.textContent = "0%";
+      progressFill.style.transform = "scaleX(0)";
+      errorPanel.hidden = true;
+      viewer.alt = state.alt;
+      viewer.src = state.src;
+      resetView(false);
+    }
+
+    stateCards.forEach(function (card) {
+      card.addEventListener("click", function () {
+        selectModelState(card.dataset.modelState);
+        if (window.matchMedia("(max-width: 820px)").matches) {
+          window.setTimeout(function () {
+            stage.scrollIntoView({ behavior: reducedMotion.matches ? "auto" : "smooth", block: "start" });
+          }, 80);
+        }
+      });
+    });
+
+    function updateDeviceHint() {
+      const available = Boolean(viewer.canActivateAR);
+      deviceHint.hidden = available;
+      arButton.classList.toggle("is-unavailable", !available);
+      arButton.setAttribute("aria-disabled", String(!available));
+    }
+
+    viewer.addEventListener("progress", function (event) {
+      const progress = Math.min(1, Math.max(0, event.detail.totalProgress || 0));
+      const percentage = Math.round(progress * 100);
+      progressValue.textContent = percentage + "%";
+      progressFill.style.transform = "scaleX(" + progress + ")";
+
+      if (progress >= 1) {
+        window.setTimeout(function () {
+          progressShell.classList.add("is-complete");
+        }, 220);
+      }
+    });
+
+    viewer.addEventListener("load", function () {
+      document.body.classList.add("is-ready");
       errorPanel.hidden = true;
       updateDeviceHint();
     });
 
-    viewer.addEventListener('error', () => {
-      modelState.textContent = 'Errore nel caricamento';
-      progressShell.classList.add('is-complete');
+    viewer.addEventListener("error", function () {
+      progressShell.classList.add("is-complete");
       errorPanel.hidden = false;
     });
 
-    viewer.addEventListener('ar-status', (event) => {
-      if (event.detail.status === 'failed') {
-        showToast('La modalità AR non è disponibile su questo dispositivo.');
+    viewer.addEventListener("ar-status", function (event) {
+      if (event.detail.status === "failed") {
+        showToast("La modalità AR non è disponibile su questo dispositivo.");
       }
     });
 
-    resetButton.addEventListener('click', () => {
-      viewer.cameraTarget = 'auto auto auto';
-      viewer.cameraOrbit = '-22deg 76deg 112%';
-      viewer.fieldOfView = '32deg';
-      viewer.jumpCameraToGoal();
-      showToast('Vista iniziale ripristinata');
+    arButton.addEventListener("click", function (event) {
+      if (!viewer.canActivateAR) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        showToast("Apri la pagina da uno smartphone compatibile per usare l’AR.");
+      }
+    }, true);
+
+    resetButton.addEventListener("click", function () {
+      resetView(true);
     });
 
-    fullscreenButton.addEventListener('click', async () => {
+    exploreButton.addEventListener("click", function () {
+      if (document.body.dataset.activeSection !== "ar" && window.matchMedia("(max-width: 820px)").matches) {
+        showSection("ar");
+      }
+      resetView(false);
+      stage.scrollIntoView({ behavior: reducedMotion.matches ? "auto" : "smooth", block: "start" });
+      window.setTimeout(function () {
+        viewer.focus();
+      }, 240);
+    });
+
+    fullscreenButton.addEventListener("click", async function () {
       try {
         if (!document.fullscreenElement) {
           await stage.requestFullscreen();
         } else {
           await document.exitFullscreen();
         }
-      } catch {
-        showToast('Schermo intero non disponibile');
+      } catch (error) {
+        showToast("Schermo intero non disponibile");
       }
     });
 
-    shareButton.addEventListener('click', async () => {
+    shareButton.addEventListener("click", async function () {
       const shareData = {
         title: document.title,
-        text: 'Guarda la statua di San Catello in realtà aumentata.',
+        text: "Scopri il progetto di studio e restauro di San Catello.",
         url: window.location.href
       };
 
@@ -774,22 +2039,38 @@
         }
 
         await navigator.clipboard.writeText(window.location.href);
-        showToast('Link copiato');
+        showToast("Link copiato");
       } catch (error) {
-        if (error.name !== 'AbortError') {
-          showToast('Non è stato possibile condividere il link');
+        if (error.name !== "AbortError") {
+          showToast("Non è stato possibile condividere il link");
         }
       }
     });
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      viewer.removeAttribute('auto-rotate');
+    if (reducedMotion.matches) {
+      viewer.removeAttribute("auto-rotate");
     }
 
-    window.addEventListener('offline', () => showToast('Connessione assente'));
-    window.addEventListener('online', () => showToast('Connessione ripristinata'));
+    const initialSection = window.location.hash.replace("#", "");
+    showSection(["progetto", "tavole", "video", "ar"].includes(initialSection) ? initialSection : "progetto", {
+      updateHistory: Boolean(initialSection),
+      scrollToPanel: false
+    });
 
-    customElements.whenDefined('model-viewer').then(() => {
+    window.addEventListener("hashchange", function () {
+      const section = window.location.hash.replace("#", "");
+      if (["progetto", "tavole", "video", "ar"].includes(section)) {
+        showSection(section, { updateHistory: false });
+      }
+    });
+    window.addEventListener("offline", function () {
+      showToast("Connessione assente");
+    });
+    window.addEventListener("online", function () {
+      showToast("Connessione ripristinata");
+    });
+
+    customElements.whenDefined("model-viewer").then(function () {
       window.setTimeout(updateDeviceHint, 500);
     });
   </script>

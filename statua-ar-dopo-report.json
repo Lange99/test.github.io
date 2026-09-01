@@ -1,0 +1,26 @@
+{
+	"generator": "gltfpack 1.1",
+	"scene": {
+		"nodeCount": 1,
+		"meshCount": 1,
+		"materialCount": 1,
+		"textureCount": 1,
+		"animationCount": 0
+	},
+	"render": {
+		"drawCount": 1,
+		"instanceCount": 1,
+		"triangleCount": 89916
+	},
+	"data": {
+		"json": 1269,
+		"binary": 3895344,
+		"buffers": {
+			"vertex": 1690880,
+			"index": 539496,
+			"animation": 0,
+			"transform": 0,
+			"image": 1664968
+		}
+	}
+}

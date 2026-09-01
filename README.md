@@ -1,6 +1,6 @@
-# San Catello in realtà aumentata
+# San Catello — esperienza digitale
 
-Sito statico mobile-first per esplorare la statua a colori in 3D e posizionarla nello spazio tramite realtà aumentata.
+Sito statico responsive dedicato al progetto di studio, restauro e valorizzazione digitale della scultura lignea policroma di San Catello.
 
 URL GitHub Pages e destinazione del QR code:
 
@@ -8,22 +8,30 @@ URL GitHub Pages e destinazione del QR code:
 
 ## Funzionamento
 
+- La navigazione passa senza ricaricare la pagina fra Il progetto, Tavole illustrative, Video e Realtà aumentata.
+- Le 19 tavole della tesi sono consultabili come galleria e in un viewer quasi fullscreen; il PDF completo resta disponibile.
+- I video si aprono in un modal su desktop e direttamente su YouTube su mobile.
+- La sezione Realtà aumentata confronta i modelli prima e dopo il restauro.
 - Il visualizzatore 3D funziona su desktop e smartphone.
 - Su Android compatibile usa WebXR o Google Scene Viewer.
 - Su iPhone/iPad compatibile usa Apple Quick Look; il file USDZ viene generato dal GLB corretto, quindi il vecchio `statua.usdz` bianco non viene più caricato.
-- Il pulsante AR viene mostrato solo quando il dispositivo supporta una modalità disponibile.
+- Se il dispositivo non supporta l'AR, l'interfaccia mostra un messaggio discreto.
 - L'AR richiede HTTPS; GitHub Pages lo fornisce automaticamente.
 
 ## Asset 3D
 
-L'asset usato dal sito è `statua-ar-v2.glb`:
+Il sito usa due asset ottimizzati:
+
+- `statua-ar-v2.glb`: San Catello prima del restauro, 248.346 triangoli e circa 4,8 MB;
+- `statua-ar-dopo.glb`: San Catello dopo il restauro, 89.916 triangoli e circa 3,9 MB.
+
+Entrambi mantengono:
 
 - texture colore originale incorporata;
 - UV, posizioni e normali conservate in virgola mobile, senza trasformazioni di texture dipendenti dalla GPU;
 - normal map volutamente esclusa per evitare differenze di shader tra GPU desktop e mobile;
 - orientamento verticale nativo, senza rotazioni forzate nella pagina;
-- altezza del modello pari a 1 unità/metri nella scena;
-- 248.346 triangoli e circa 4,8 MB, contro i 2.210.778 triangoli e 38,8 MB del tentativo iniziale.
+- altezza del modello pari a circa 1 unità/metro nella scena.
 
 Il file intermedio a colori può essere rigenerato con:
 

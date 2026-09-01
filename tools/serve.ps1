@@ -21,6 +21,7 @@ $mimeTypes = @{
     ".jpg" = "image/jpeg"
     ".jpeg" = "image/jpeg"
     ".png" = "image/png"
+    ".pdf" = "application/pdf"
     ".webp" = "image/webp"
     ".svg" = "image/svg+xml"
 }
