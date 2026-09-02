@@ -5,21 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#251713">
   <meta name="color-scheme" content="only light">
-  <meta name="description" content="Esplora il progetto di studio e restauro di San Catello attraverso tavole, video, modelli 3D e realtà aumentata.">
+  <meta name="description" content="Esplora il progetto di studio e restauro delle sculture di San Catello e Sant’Antonino attraverso tavole, video, modelli 3D e realtà aumentata.">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="it_IT">
-  <meta property="og:title" content="San Catello — esperienza digitale">
-  <meta property="og:description" content="Studio, restauro e valorizzazione digitale della scultura lignea policroma di San Catello.">
+  <meta property="og:title" content="Il progetto San Catello e Sant’Antonino">
+  <meta property="og:description" content="Studio, restauro e valorizzazione digitale delle sculture lignee policrome di San Catello e Sant’Antonino.">
   <meta property="og:url" content="https://lange99.github.io/test.github.io/">
   <meta property="og:image" content="https://lange99.github.io/test.github.io/og.png">
   <meta property="og:image:width" content="1730">
   <meta property="og:image:height" content="909">
-  <meta property="og:image:alt" content="San Catello — esplora la statua a colori in 3D e realtà aumentata">
+  <meta property="og:image:alt" content="Il progetto San Catello e Sant’Antonino — studio, restauro e valorizzazione digitale">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="San Catello — esperienza digitale">
-  <meta name="twitter:description" content="Studio, restauro e valorizzazione digitale della scultura lignea policroma di San Catello.">
+  <meta name="twitter:title" content="Il progetto San Catello e Sant’Antonino">
+  <meta name="twitter:description" content="Studio, restauro e valorizzazione digitale delle sculture lignee policrome di San Catello e Sant’Antonino.">
   <meta name="twitter:image" content="https://lange99.github.io/test.github.io/og.png">
-  <title>San Catello — esperienza digitale</title>
+  <title>Il progetto San Catello e Sant’Antonino</title>
 
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.3.1/model-viewer.min.js"></script>
 
@@ -148,6 +148,11 @@
       font-size: 18px;
       font-weight: 600;
       letter-spacing: -0.02em;
+      line-height: 1.05;
+    }
+
+    .brand-copy strong em {
+      font-weight: inherit;
     }
 
     .brand-copy span {
@@ -229,7 +234,7 @@
       height: 100svh;
       min-height: 0;
       padding: 94px clamp(26px, 3.2vw, 54px) 28px;
-      grid-template-rows: auto minmax(0, 1fr);
+      grid-template-rows: auto minmax(0, 1fr) auto;
     }
 
     .section-nav {
@@ -361,6 +366,10 @@
       font-weight: 500;
     }
 
+    .project-title {
+      font-size: clamp(36px, 3.55vw, 54px);
+    }
+
     .section-intro {
       max-width: 570px;
       margin: 22px 0 0;
@@ -384,35 +393,145 @@
       line-height: 1.7;
     }
 
-    .project-facts {
+    .thesis-citation {
       display: grid;
-      margin: 30px 0 0;
-      padding: 0;
-      border-top: 1px solid var(--line);
-      list-style: none;
+      max-width: 570px;
+      margin-top: 24px;
+      padding: 17px 18px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255, 253, 248, 0.42);
+      gap: 8px;
     }
 
-    .project-facts li {
+    .thesis-label,
+    .technical-sheet-label {
+      color: var(--wine);
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    .thesis-title {
+      margin: 0;
+      color: #493832;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .thesis-title em {
+      color: var(--wine);
+    }
+
+    .thesis-meta {
+      color: var(--ink-soft);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.045em;
+      line-height: 1.45;
+      text-transform: uppercase;
+    }
+
+    .technical-sheet {
       display: grid;
+      margin: 30px 0 0;
+      border-top: 1px solid var(--line);
+      gap: 0;
+    }
+
+    .technical-sheet-label {
+      padding: 14px 0 11px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .technical-objects {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .object-sheet {
+      min-width: 0;
+      padding: 15px 16px 12px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .object-sheet + .object-sheet {
+      padding-right: 0;
+      padding-left: 16px;
+      border-left: 1px solid var(--line);
+    }
+
+    .object-sheet h2 {
+      margin: 0 0 11px;
+      color: var(--wine);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 19px;
+      font-weight: 500;
+    }
+
+    .object-sheet dl,
+    .technical-shared {
+      margin: 0;
+    }
+
+    .object-sheet dl > div,
+    .technical-shared > div {
+      display: grid;
+      padding: 7px 0;
+      grid-template-columns: minmax(72px, 0.42fr) 1fr;
+      gap: 10px;
+    }
+
+    .object-sheet dl > div + div {
+      border-top: 1px solid rgba(74, 46, 34, 0.1);
+    }
+
+    .technical-shared > div {
       min-height: 52px;
       align-items: center;
       padding: 11px 0;
       border-bottom: 1px solid var(--line);
-      grid-template-columns: minmax(96px, 0.36fr) 1fr;
+      grid-template-columns: minmax(118px, 0.36fr) 1fr;
       gap: 16px;
     }
 
-    .project-facts strong {
+    .object-sheet dt,
+    .technical-shared dt {
       color: var(--wine);
-      font-size: 10px;
-      letter-spacing: 0.12em;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      line-height: 1.35;
       text-transform: uppercase;
     }
 
-    .project-facts span {
+    .object-sheet dd,
+    .technical-shared dd {
+      margin: 0;
       color: var(--ink-soft);
-      font-size: 12px;
+      font-size: 11px;
       line-height: 1.45;
+    }
+
+    .site-footer {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      padding: 13px 1px 0;
+      border-top: 1px solid var(--line);
+      color: var(--ink-soft);
+      font-size: 9px;
+      letter-spacing: 0.075em;
+      line-height: 1.45;
+      text-transform: uppercase;
+      gap: 3px 7px;
+    }
+
+    .site-footer strong {
+      color: var(--wine);
+      font-weight: 800;
     }
 
     .inline-action {
@@ -1097,6 +1216,19 @@
         grid-template-columns: 1fr;
       }
 
+      .technical-objects {
+        grid-template-columns: 1fr;
+      }
+
+      .object-sheet {
+        padding-right: 0;
+      }
+
+      .object-sheet + .object-sheet {
+        padding-left: 0;
+        border-left: 0;
+      }
+
       .video-thumb {
         min-height: auto;
         aspect-ratio: 16 / 9;
@@ -1118,6 +1250,25 @@
       .brand-copy span,
       .share-button span {
         display: none;
+      }
+
+      .brand {
+        min-width: 0;
+        gap: 9px;
+      }
+
+      .brand-mark {
+        flex: 0 0 auto;
+      }
+
+      .brand-copy {
+        min-width: 0;
+      }
+
+      .brand-copy strong {
+        display: block;
+        max-width: calc(100vw - 130px);
+        font-size: clamp(13px, 4vw, 16px);
       }
 
       .share-button {
@@ -1197,12 +1348,37 @@
         font-size: clamp(38px, 11vw, 54px);
       }
 
+      .project-title {
+        font-size: clamp(34px, 10vw, 48px);
+      }
+
       .section-intro {
         font-size: 14px;
       }
 
       .project-copy p {
         font-size: 16px;
+      }
+
+      .technical-objects {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .object-sheet {
+        padding-right: 16px;
+      }
+
+      .object-sheet + .object-sheet {
+        padding-right: 0;
+        padding-left: 16px;
+        border-left: 1px solid var(--line);
+      }
+
+      .site-footer {
+        width: calc(100% - 36px);
+        max-width: 720px;
+        margin: 10px auto 0;
+        padding-top: 16px;
       }
 
       .board-gallery {
@@ -1351,7 +1527,20 @@
         min-height: 118px;
       }
 
-      .project-facts li {
+      .technical-objects {
+        grid-template-columns: 1fr;
+      }
+
+      .object-sheet {
+        padding-right: 0;
+      }
+
+      .object-sheet + .object-sheet {
+        padding-left: 0;
+        border-left: 0;
+      }
+
+      .technical-shared > div {
         grid-template-columns: 1fr;
         gap: 5px;
       }
@@ -1392,14 +1581,14 @@
   <a class="skip-link" href="#sectionContent">Vai al contenuto</a>
 
   <header class="topbar">
-    <a class="brand" href="#progetto" aria-label="San Catello — vai alla sezione Il progetto">
+    <a class="brand" href="#progetto" aria-label="San Catello e Sant’Antonino — vai alla sezione Il progetto">
       <span class="brand-mark" aria-hidden="true">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7">
           <path d="M12 3v18M8 7h8M6 21h12" stroke-linecap="round"/>
         </svg>
       </span>
       <span class="brand-copy">
-        <strong>San Catello</strong>
+        <strong><em>San Catello</em> e <em>Sant’Antonino</em></strong>
         <span>Esperienza digitale</span>
       </span>
     </a>
@@ -1435,20 +1624,47 @@
         <div class="sidebar-scroll" id="sectionContent">
           <section class="section-panel" id="panel-progetto" role="tabpanel" aria-labelledby="tab-progetto" tabindex="0">
             <p class="eyebrow">Studio · restauro · valorizzazione</p>
-            <h1 class="section-title">Il progetto <em>San Catello</em></h1>
-            <p class="section-intro">Un percorso digitale attraverso la ricerca storico-artistica, le indagini diagnostiche, la tecnica esecutiva, lo stato di conservazione e gli interventi di restauro documentati nelle tavole originali.</p>
+            <h1 class="section-title project-title">Il progetto <em>San Catello e Sant’Antonino</em></h1>
+            <p class="section-intro">Questo sito nasce dalla tesi di Maria Teresa Rapicano e ne amplia il percorso in forma digitale, per rendere accessibili la ricerca, la documentazione e i modelli tridimensionali delle opere.</p>
+
+            <aside class="thesis-citation" aria-label="Riferimenti della tesi">
+              <span class="thesis-label">Tesi</span>
+              <p class="thesis-title">Il restauro delle sculture lignee policrome dei santi patroni di Castellammare di Stabia e Sorrento: <em>San Catello</em> e <em>Sant’Antonino</em></p>
+              <span class="thesis-meta">Maria Teresa Rapicano · Anno accademico 2024–2025</span>
+            </aside>
 
             <div class="project-copy">
-              <p>Il progetto studia due opere attribuite alla scuola napoletana, documentandone provenienza, materiali, alterazioni, tecniche costruttive e possibilità di valorizzazione digitale attraverso rilievi fotogrammetrici e modelli tridimensionali.</p>
-              <p>San Catello e Sant' Antonino sono due sculture lignee policrome di artista ignoto, databili rispettivamente all'inizio del XIX secolo e alla fine del XVIII secolo. La lettura ravvicinata delle opere mette in relazione la loro storia materiale con le scelte conservative che ne hanno recuperato stabilità e leggibilità.</p>
+              <p>Il progetto studia le opere raffiguranti San Catello e Sant’Antonino, documentandone la provenienza, lo stato di conservazione, le tecniche costruttive e le possibilità di valorizzazione digitale attraverso rilievi fotogrammetrici e modelli tridimensionali.</p>
+              <p>La lettura ravvicinata mette in relazione la storia materiale delle sculture con le indagini diagnostiche e con gli interventi conservativi, evidenziando il recupero della stabilità e della leggibilità.</p>
             </div>
 
-            <ul class="project-facts" aria-label="Dati principali del progetto">
-              <li><strong>San Catello</strong><span>Scultura lignea policroma, 107,5 × 39 × 25,5 cm</span></li>
-              <li><strong>Sant' Antonino</strong><span>Scultura lignea policroma, 80 x 28.50 x 47.5 cm</span></li>
-              <li><strong>Documentazione 3D</strong><span>Fotogrammetria, modelli tridimensionali, Sperimentazione olografica, gestione VPL e AR</span></li>
-              <li><strong>Percorso</strong><span>Conoscenza, diagnostica, restauro e valorizzazione digitale</span></li>
-            </ul>
+            <div class="technical-sheet" aria-label="Scheda tecnica delle opere">
+              <span class="technical-sheet-label">Scheda tecnica</span>
+              <div class="technical-objects">
+                <section class="object-sheet" aria-labelledby="sheet-san-catello">
+                  <h2 id="sheet-san-catello"><em>San Catello</em></h2>
+                  <dl>
+                    <div><dt>Tipologia</dt><dd>Scultura lignea policroma</dd></div>
+                    <div><dt>Artista</dt><dd>Ignoto</dd></div>
+                    <div><dt>Datazione</dt><dd>Inizio del XIX secolo</dd></div>
+                    <div><dt>Dimensioni</dt><dd>107,5 × 39 × 25,5 cm</dd></div>
+                  </dl>
+                </section>
+                <section class="object-sheet" aria-labelledby="sheet-sant-antonino">
+                  <h2 id="sheet-sant-antonino"><em>Sant’Antonino</em></h2>
+                  <dl>
+                    <div><dt>Tipologia</dt><dd>Scultura lignea policroma</dd></div>
+                    <div><dt>Artista</dt><dd>Ignoto</dd></div>
+                    <div><dt>Datazione</dt><dd>Fine del XVIII secolo</dd></div>
+                    <div><dt>Dimensioni</dt><dd>80 × 28,5 × 47,5 cm</dd></div>
+                  </dl>
+                </section>
+              </div>
+              <dl class="technical-shared">
+                <div><dt>Documentazione 3D</dt><dd>Fotogrammetria, modelli tridimensionali, sperimentazione olografica, gestione VPL e AR</dd></div>
+                <div><dt>Percorso</dt><dd>Ricerca storico-artistica, conoscenza, diagnostica, restauro e valorizzazione digitale</dd></div>
+              </dl>
+            </div>
           </section>
 
           <section class="section-panel" id="panel-tavole" role="tabpanel" aria-labelledby="tab-tavole" tabindex="0" hidden>
@@ -1494,7 +1710,7 @@
           <section class="section-panel" id="panel-ar" role="tabpanel" aria-labelledby="tab-ar" tabindex="0" hidden>
             <p class="eyebrow">Confronto · modello 3D</p>
             <h2 class="section-title">Realtà <em>aumentata</em></h2>
-            <p class="section-intro">Confronta la scultura prima e dopo l’intervento e scopri come il restauro ne ha modificato la leggibilità, mantenendo visibile la storia materiale dell’opera.</p>
+            <p class="section-intro">Confronta la scultura prima e dopo l’intervento e scopri come il restauro ha restituito leggibilità all’opera, mantenendo visibile la sua storia materiale.</p>
 
             <div class="state-selectors" aria-label="Scegli lo stato della statua">
               <button class="state-card" type="button" aria-pressed="true" data-model-state="prima">
@@ -1510,6 +1726,11 @@
             <div class="active-state-copy" id="activeStateCopy" aria-live="polite">Stato · Prima del restauro</div>
           </section>
         </div>
+        <footer class="site-footer">
+          <span>Tesi di</span>
+          <strong>Maria Teresa Rapicano</strong>
+          <span>· A.A. 2024–2025</span>
+        </footer>
       </div>
     </aside>
 
@@ -2029,7 +2250,7 @@
     shareButton.addEventListener("click", async function () {
       const shareData = {
         title: document.title,
-        text: "Scopri il progetto di studio e restauro di San Catello.",
+        text: "Scopri il progetto di studio e restauro di San Catello e Sant’Antonino.",
         url: window.location.href
       };
 

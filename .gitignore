@@ -1,6 +1,9 @@
 # Asset intermedi generati localmente
 statua-colori*.glb
 
+# Esportazioni locali non necessarie al sito pubblicato
+/altro/
+
 # Sorgenti originali molto pesanti: restano locali e non servono a GitHub Pages
 statua/
 statua_post/
